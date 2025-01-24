@@ -1,6 +1,5 @@
 package com.example.tobyspring.payment;
 
-import com.example.tobyspring.exrate.ExRateProvider;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
