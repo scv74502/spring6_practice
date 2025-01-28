@@ -1,26 +1,28 @@
 package com.example.tobyspring.payment;
 
-import com.example.tobyspring.TestObjectFactory;
+import com.example.tobyspring.TestPaymentConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.LocalDateTime;
 
 import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestObjectFactory.class)
+@ContextConfiguration(classes = TestPaymentConfig.class)
 class PaymentServiceSpringTest {
     @Autowired
     PaymentService paymentService;
+    @Autowired
+    Clock clock;
     @Autowired
     ExRateProviderStub exRateProviderStub;  // 에러는 발생하나 잘 동작한다
 
@@ -39,6 +41,17 @@ class PaymentServiceSpringTest {
 
         assertThat(payment2.getExRate()).isEqualByComparingTo(valueOf(500)); // 값이 ExRateProviderStub의 값과 같은지 검증
         assertThat(payment2.getConvertedAmount()).isEqualByComparingTo(valueOf(5_000));
+    }
+
+    @Test
+    void validUntil() throws IOException {
+        PaymentService paymentService = new PaymentService(new ExRateProviderStub(valueOf(1_000)), clock);
+        Payment payment = paymentService.prepare(1L, "USD", BigDecimal.TEN);
+
+        LocalDateTime now = LocalDateTime.now(this.clock);
+        LocalDateTime expectedValidateUntil = now.plusMinutes(30);
+
+        assertThat(payment.getValidUntil()).isEqualTo(expectedValidateUntil);
     }
 }
 
