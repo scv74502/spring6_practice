@@ -1,5 +1,8 @@
 package com.example.tobyspring.exrate;
 
+import com.example.tobyspring.api.ApiExecutor;
+import com.example.tobyspring.api.ErApiExRateExtractor;
+import com.example.tobyspring.api.ExRateExtractor;
 import com.example.tobyspring.api.SimpleApiExecutor;
 import com.example.tobyspring.payment.ExRateProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,12 +22,13 @@ import java.util.stream.Collectors;
 public class WebApiExRateProvider implements ExRateProvider {
     public BigDecimal getExRate(String currency) {
         String url = "https://open.er-api.com/v6/latest/" + currency;
-        return runApiForExRate(url);
+        return runApiForExRate(url, new SimpleApiExecutor(), new ErApiExRateExtractor());
 
 //        System.out.println("API ExRate: " + data.rates().get("KRW"));
     }
 
-    private static BigDecimal runApiForExRate(String url) {
+    // ApiExecutor apiExecutor 부분이 callBack, 콜백 받아서 내부 기능 수행하면 템플릿
+    private static BigDecimal runApiForExRate(String url, ApiExecutor apiExecutor, ExRateExtractor exRateExtractor) {
         URI uri;
         try {
             uri = new URI(url);
@@ -34,13 +38,13 @@ public class WebApiExRateProvider implements ExRateProvider {
 
         String response;
         try {
-            response = new SimpleApiExecutor().execute(uri);
+            response = apiExecutor.execute(uri);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         try{
-            return extractExRate(response);
+            return exRateExtractor.extract(response);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
