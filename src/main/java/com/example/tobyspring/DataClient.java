@@ -1,5 +1,6 @@
 package com.example.tobyspring;
 
+import com.example.tobyspring.data.OrderRepository;
 import com.example.tobyspring.order.Order;
 import com.example.tobyspring.payment.PaymentService;
 import jakarta.persistence.EntityManager;
@@ -12,21 +13,16 @@ import java.math.BigDecimal;
 public class DataClient {
     public static void main(String[] args) {
         BeanFactory beanFactory = new AnnotationConfigApplicationContext(DataConfig.class);
-        EntityManagerFactory emf = beanFactory.getBean(EntityManagerFactory.class);
+        OrderRepository repository = beanFactory.getBean(OrderRepository.class);
 
-        // em
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-
-        // em.persist
         Order order = new Order("100", BigDecimal.TEN);
-        System.out.println(order);
-        em.persist(order);
+        repository.save(order);
 
         System.out.println(order);
 
-        // transaction
-        em.getTransaction().commit();
-        em.close();
+        Order order2 = new Order("100", BigDecimal.TEN);
+        repository.save(order2);
+
+        System.out.println(order2);
     }
 }
