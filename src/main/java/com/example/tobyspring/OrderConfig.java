@@ -1,6 +1,7 @@
 package com.example.tobyspring;
 
-import com.example.tobyspring.data.OrderRepository;
+import com.example.tobyspring.data.JpaOrderRepository;
+import com.example.tobyspring.order.OrderRepository;
 import com.example.tobyspring.order.OrderService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,6 @@ public class OrderConfig {
 
     @Bean
     public OrderRepository orderRepository(){
-        return new OrderRepository();
+        return new JpaOrderRepository();
     }
 }

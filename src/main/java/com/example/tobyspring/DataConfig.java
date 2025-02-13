@@ -1,6 +1,5 @@
 package com.example.tobyspring;
 
-import com.example.tobyspring.data.OrderRepository;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
