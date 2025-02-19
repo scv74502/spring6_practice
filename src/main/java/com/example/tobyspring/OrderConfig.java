@@ -3,6 +3,8 @@ package com.example.tobyspring;
 import com.example.tobyspring.data.JdbcOrderRepository;
 import com.example.tobyspring.order.OrderRepository;
 import com.example.tobyspring.order.OrderService;
+import com.example.tobyspring.order.OrderServiceImpl;
+import com.example.tobyspring.order.OrderServiceTxProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -24,6 +26,9 @@ public class OrderConfig {
             PlatformTransactionManager transactionManager,
             OrderRepository orderRepository
     ){
-        return new OrderService(orderRepository, transactionManager);
+        return new OrderServiceTxProxy(
+                new OrderServiceImpl(orderRepository),
+                transactionManager
+        );
     }
 }

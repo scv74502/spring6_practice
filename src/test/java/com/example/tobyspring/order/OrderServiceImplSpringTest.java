@@ -1,7 +1,6 @@
 package com.example.tobyspring.order;
 
 import com.example.tobyspring.OrderConfig;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = OrderConfig.class)
-public class OrderServiceSpringTest {
+public class OrderServiceImplSpringTest {
     @Autowired
     OrderService orderService;
 
